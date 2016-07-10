@@ -2,7 +2,7 @@ const Oompa = require('oompa');
 const jwt = require('jsonwebtoken');
 const uuid = require('uuid').v4;
 const log = require('./log');
-const { cache } = require('./middleware');
+const cache = require('oompa-cache');
 const db = require('./db-client')(42000);
 
 const appSchema = {
@@ -17,9 +17,11 @@ const appSchema = {
       return jwt.verify(user, password);
     });
   },
-  AUTH_UPDATE: ({username, password, changes}) => {
+  AUTH_UPDATE: (data) => {
+    const {username, password, changes} = data;
     return db.findById('users', username).then(user => {
       if (!user) throw new Error('No such user');
+      data[cache.invalidate].AUTH_GET(`${username}:-:${password}`);
       return jwt.verify(user, password);
     }).then(data => {
       const user = Object.assign({}, data, changes);
@@ -31,9 +33,7 @@ const appSchema = {
 const PORT = 43234;
 
 const server = new Oompa(appSchema, () => db.ping(100));
-server.use(cache({
-  AUTH_GET: ({username, password}) => `${username}:-:${password}`
-}));
+server.use(cache('AUTH_GET', Infinity, ({username, password}) => `${username}:-:${password}`));
 
 db.on('reconnected', () => db.createTable('users'));
 
