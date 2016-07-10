@@ -3,11 +3,9 @@ const jwt = require('jsonwebtoken');
 const uuid = require('uuid').v4;
 const log = require('./log');
 const { cache } = require('./middleware');
-const ping = require('./pinger');
 const db = require('./db-client')(42000);
 
 const appSchema = {
-  PING: () => true,
   AUTH_ADD: user => {
     user.id = uuid();
     return db.create('users', jwt.sign(user, user.password),
@@ -32,7 +30,7 @@ const appSchema = {
 
 const PORT = 43234;
 
-const server = new Oompa(appSchema, ping(db, 100));
+const server = new Oompa(appSchema, () => db.ping(100));
 server.use(cache({
   AUTH_GET: ({username, password}) => `${username}:-:${password}`
 }));

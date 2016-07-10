@@ -40,7 +40,6 @@ const appSchema = {
   DELETE: ({key, table}) => {
     return DB.unset(`${table}.${setBy}`).value();
   },
-  PING: () => true,
 };
 
 const server = new Oompa(appSchema);

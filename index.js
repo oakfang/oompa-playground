@@ -1,9 +1,8 @@
 const circle = require('./client')();
 let token;
-circle.register({username: 'foo3', password: 'bar1'})
-  .then(() => circle.login('foo3', 'bar1'))
+circle.login('foo', 'bar')
   .then(t => token = t)
-  .then(() => circle.set(token, 'myKey', { meow: 5 }))
+  .then(() => circle.set(token, 'myKey', { meow: 8 }))
   .then(() => circle.get(token, 'myKey'))
-  .then(data => console.log(data))
+  .then(data => console.log(data.meow))
   .catch(console.error);

@@ -60,10 +60,6 @@ const methods = {
     factory: (table, entity, identifier, explicitId) =>
       ({table, entity, identifier, explicitId}),
   },
-  ping: {
-    type: 'PING',
-    factory: () => null,
-  },
 };
 
 module.exports = (port) => new OompaClient(`ws://localhost:${port}`,

@@ -2,7 +2,6 @@ const Oompa = require('oompa');
 const auth = require('./auth-client')();
 const log = require('./log');
 const { authenticated, tokenize, debug } = require('./middleware');
-const ping = require('./pinger');
 const db = require('./db-client')(42001);
 
 const SECRET = 'circle-circle';
@@ -22,8 +21,8 @@ const appSchema = {
 const PORT = 43236;
 
 const server = new Oompa(appSchema, () => Promise.all([
-  ping(db, 100),
-  ping(auth, 100),
+  db.ping(100),
+  db.ping(100),
 ]));
 
 server.use(debug);

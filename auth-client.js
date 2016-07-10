@@ -14,10 +14,6 @@ const methods = {
     type: 'AUTH_UPDATE',
     factory: (username, password, changes) => ({username, password, changes}),
   },
-  ping: {
-    type: 'PING',
-    factory: () => null,
-  },
 };
 
 module.exports = () => new OompaClient(url, methods);
